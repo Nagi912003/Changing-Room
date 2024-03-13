@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:camera/camera.dart';
 // import 'package:path_provider/path_provider.dart';
 
@@ -111,7 +112,7 @@ class CameraOverlay extends StatefulWidget {
 
 class _CameraOverlayState extends State<CameraOverlay> {
   late CameraController _controller;
-  File? _imageFile;
+  CroppedFile? _imageFile;
 
   @override
   void initState() {
@@ -148,26 +149,28 @@ class _CameraOverlayState extends State<CameraOverlay> {
       body: Stack(
         // alignment: Alignment.center,
         children: [
-          if (_imageFile == null)Align(
-            alignment: Alignment.center,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox(
-                height: MediaQuery.sizeOf(context).height * 0.6,
-                width: MediaQuery.sizeOf(context).width * 0.9,
+          if (_imageFile == null)
+            Align(
+              alignment: Alignment.center,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: SizedBox(
+                  height: MediaQuery.sizeOf(context).height * 0.6,
+                  width: MediaQuery.sizeOf(context).width * 0.9,
                   child: CameraPreview(_controller),
+                ),
               ),
             ),
-          ),
           if (_imageFile != null)
             Align(
               alignment: Alignment.center,
               child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.6,
-                      width: MediaQuery.sizeOf(context).width * 0.9,
-                      child: Image.file(_imageFile!)),
+                borderRadius: BorderRadius.circular(10),
+                child: SizedBox(
+                  height: MediaQuery.sizeOf(context).height * 0.6,
+                  width: MediaQuery.sizeOf(context).width * 0.9,
+                  child: Image.file(File(_imageFile!.path)),
+                ),
               ),
             ),
 
@@ -220,15 +223,39 @@ class _CameraOverlayState extends State<CameraOverlay> {
   Future<void> _captureImage() async {
     if (_controller.value.isInitialized) {
       try {
-        final XFile image =
-            await _controller.takePicture(); // Capture the XFile
+        final XFile image = await _controller.takePicture();
 
-        // Handle the captured image (e.g., display, save, process)
-        setState(() {
-          _imageFile = File(image.path);
-        });
+        // Open the image cropper
+        CroppedFile? croppedFile = await ImageCropper().cropImage(
+          sourcePath: image.path,
+          aspectRatioPresets: [
+            // Optional: Add aspect ratio options
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9
+          ],
+          uiSettings: [
+            AndroidUiSettings(
+              // Optional: Show the toolbar and other UI elements
+              toolbarTitle: 'Crop image to fit',
+              toolbarColor: Colors.deepPurple,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: CropAspectRatioPreset.original,
+              lockAspectRatio: false,
+            ),
+          ],
+          // ... (Other ImageCropper settings if desired)
+        );
+
+        if (croppedFile != null) {
+          setState(() {
+            _imageFile = croppedFile;
+          });
+        }
       } catch (e) {
-        // Handle errors (e.g., display a message)
+        // Handle errors
         print(e);
       }
     }
