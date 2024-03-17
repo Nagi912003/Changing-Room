@@ -1,36 +1,3 @@
-// import 'package:flutter/material.dart';
-//
-// import 'package:changing_room/UI/screens/pick_image_screen/pick_image_screen.dart';
-//
-// void main() {
-//   runApp(const MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       // color: Colors.deepPurple,
-//       title: 'Changing Room',
-//       theme: ThemeData(
-//         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-//         useMaterial3: true,
-//       ),
-//       themeMode: ThemeMode.system,
-//       darkTheme: ThemeData(
-//         brightness: Brightness.dark,
-//         useMaterial3: true,
-//       ),
-//       home: const PickImageScreen(),
-//     );
-//   }
-// }
-//
-
 ///----------------------------------------------------------------------------------------------------------------
 // import 'dart:typed_data';
 //
@@ -155,11 +122,7 @@
 import 'package:changing_room/UI/screens/pick_image_screen/pick_image_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:camera/camera.dart';
 import 'dart:io';
 
 void main() async {
