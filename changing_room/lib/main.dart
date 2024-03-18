@@ -125,6 +125,13 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:io';
 
+import 'package:provider/provider.dart';
+
+import 'Data/providers/clothes.dart';
+import 'Data/providers/clothes_filter.dart';
+import 'Data/providers/clothes_selector_provider.dart';
+import 'Data/providers/favorites.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure initialization
   await Hive.initFlutter(); // Initialize Hive
@@ -137,13 +144,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      theme: CupertinoThemeData(
-        primaryColor: Colors.deepPurpleAccent,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (BuildContext context) => Clothes()),
+        ChangeNotifierProvider(
+            create: (BuildContext context) => ClothesSelectorProvider()),
+        ChangeNotifierProvider(create: (BuildContext context) => Filter()),
+        ChangeNotifierProvider(create: (BuildContext context) => Favorites()),
+      ],
+      child: const CupertinoApp(
+        theme: CupertinoThemeData(
+          primaryColor: Colors.deepPurpleAccent,
+        ),
+        debugShowCheckedModeBanner: false,
+        title: 'Image Saving with Hive',
+        home: ImageSaver(),
       ),
-      debugShowCheckedModeBanner: false,
-      title: 'Image Saving with Hive',
-      home: ImageSaver(),
     );
   }
 }
