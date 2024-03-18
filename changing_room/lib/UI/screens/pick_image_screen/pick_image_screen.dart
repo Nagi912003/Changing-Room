@@ -6,17 +6,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+
+import '../../../Data/providers/clothes.dart';
 
 // import 'package:image_cropper/image_cropper.dart';
 
 enum AppState {
   free,
   picked,
-  cropped,
+  done,
 }
 
 class PickImageScreen extends StatefulWidget {
-  const PickImageScreen({Key? key}) : super(key: key);
+  const PickImageScreen({Key? key, required this.pieceId}) : super(key: key);
+  final String? pieceId;
 
   @override
   _PickImageScreenState createState() => _PickImageScreenState();
@@ -32,6 +36,7 @@ class _PickImageScreenState extends State<PickImageScreen> {
     ResolutionPreset.medium,
   );
   String? _imageFile;
+  List<String> imagePaths = [];
   late AppState state;
   String bgRemoverAPIKey = 'DTbCFd8MiPDdsn3ge17Pd2FM';
 
@@ -56,67 +61,129 @@ class _PickImageScreenState extends State<PickImageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('Pick Image'),
+    final clothes = Provider.of<Clothes>(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Pick Image'),
       ),
-      child: !_cameraController.value.isInitialized
+      body: !_cameraController.value.isInitialized
           ? const Center(child: CircularProgressIndicator())
-          : Stack(
-              // alignment: Alignment.center,
-              children: [
-                if (state == AppState.free)
-                  Align(
-                    alignment: Alignment.center,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: SizedBox(
-                        height: MediaQuery.sizeOf(context).height * 0.6,
-                        width: MediaQuery.sizeOf(context).width * 0.9,
-                        child: CameraPreview(_cameraController),
-                      ),
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  // alignment: Alignment.center,
+                  children: [
+                    imagePaths.isNotEmpty
+                        ? SizedBox(
+                            height: 100,
+                            width: MediaQuery.sizeOf(context).width - 16,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemCount: imagePaths.length,
+                              itemBuilder: (context, index) {
+                                return SizedBox(
+                                  height: 100,
+                                  width: 100,
+                                  child: Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.file(
+                                          File(imagePaths[index]),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                        : const SizedBox(
+                            height: 100,
+                          ),
+                    const SizedBox(height: 16),
+                    Stack(
+                      children: [
+                        if (state == AppState.free)
+                          Align(
+                            alignment: const Alignment(0, -0.2),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: SizedBox(
+                                // height: MediaQuery.sizeOf(context).width - 16,
+                                width: MediaQuery.sizeOf(context).width - 16,
+                                child: CameraPreview(
+                                  _cameraController,
+                                  child: Image.asset(
+                                    'assets/images/outlines/tshirt-top-outline.png',
+                                    fit: BoxFit.fitWidth,
+                                    width:
+                                        MediaQuery.sizeOf(context).width * 0.9,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (state == AppState.picked)
+                          Align(
+                            alignment: Alignment.center,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: SizedBox(
+                                // height: MediaQuery.sizeOf(context).height * 0.6,
+                                // width: MediaQuery.sizeOf(context).width * 0.9,
+                                child: Image.file(File(_imageFile!)),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                  ),
-                if (state == AppState.picked)
-                  Align(
-                    alignment: Alignment.center,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: SizedBox(
-                        height: MediaQuery.sizeOf(context).height * 0.6,
-                        width: MediaQuery.sizeOf(context).width * 0.9,
-                        child: Image.file(File(_imageFile!)),
+                    const SizedBox(height: 16),
+                    if (state == AppState.free)
+                      CupertinoButton.filled(
+                        onPressed: _takePicture,
+                        child: const Text('Take Picture'),
                       ),
-                    ),
-                  ),
-                // Your custom overlay widgets
-                if (state == AppState.free)
-                  Align(
-                    alignment: const Alignment(0, -0.2),
-                    // top: 50,
-                    // left: 20,
-                    child: Image.asset(
-                      'assets/images/outlines/tshirt-top-outline.png',
-                      fit: BoxFit.fill,
-                      width: MediaQuery.sizeOf(context).width * 0.9,
-                    ),
-                  ),
-                state == AppState.free
-                    ? Align(
-                        alignment: const Alignment(0, 0.8),
-                        child: CupertinoButton.filled(
-                          onPressed: _takePicture,
-                          child: const Text('Take Picture'),
-                        ),
-                      )
-                    : Align(
-                        alignment: const Alignment(0, 0.8),
-                        child: CupertinoButton.filled(
-                          onPressed: _clearImage,
-                          child: const Text('Clear Image'),
-                        ),
+                    if (state == AppState.picked)
+                      Row(
+                        children: [
+                          CupertinoButton.filled(
+                            onPressed: () {
+                              addImagePathToList(_imageFile!);
+                              _clearImage();
+                              clothes.setImages(imagePaths);
+                              // clothes.addImage(_imageFile!);
+                              print(clothes.imagesInput);
+                            },
+                            child: const Text('save'),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          CupertinoButton.filled(
+                            onPressed: _clearImage,
+                            child: const Text('retake picture'),
+                          ),
+                        ],
                       ),
-              ],
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    // if (state == AppState.picked)
+                    CupertinoButton.filled(
+                      onPressed: () {
+                        saveImagePathsToHive();
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('save'),
+                    ),
+                  ],
+                ),
+              ),
             ),
     );
   }
@@ -135,12 +202,23 @@ class _PickImageScreenState extends State<PickImageScreen> {
         state = AppState.picked;
       });
 
-      _saveImagePathToHive(newImagePath);
+      // _saveImagePathToHive(newImagePath, widget.pieceId!);
     } catch (e) {
       if (kDebugMode) {
         print(e);
       } // Handle any errors
     }
+  }
+
+  void addImagePathToList(String path) {
+    setState(() {
+      imagePaths.add(path);
+    });
+  }
+
+  void saveImagePathsToHive() async {
+    var box = await Hive.openBox('imageBox');
+    box.put('imagePaths${widget.pieceId}', imagePaths);
   }
   // Future<void> _captureAndCropImage() async {
   //   if (_controller.value.isInitialized) {
@@ -194,9 +272,9 @@ class _PickImageScreenState extends State<PickImageScreen> {
     });
   }
 
-  Future<void> _saveImagePathToHive(String path) async {
+  Future<void> _saveImagePathToHive(String path, String pieceId) async {
     var box = await Hive.openBox('imageBox');
-    box.put('imagePath', path);
+    box.put('imagePath${pieceId}', path);
   }
 
 // Helper to get a file path in the app's temporary directory

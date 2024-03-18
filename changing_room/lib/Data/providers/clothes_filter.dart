@@ -57,25 +57,25 @@ class Filter with ChangeNotifier{
 
     return list;
   }
-  static List<Piece> filterByBrightness(List<Piece> list) {
-    if (brightness == Brightness.light) {
-      return list
-          .where((element) => (element.brightness == Brightness.light ||
-          element.brightness == Brightness.both))
-          .toList();
-    } else if (brightness == Brightness.dark) {
-      return list
-          .where((element) => (element.brightness == Brightness.dark||
-          element.brightness == Brightness.both))
-          .toList();
-    } else if (brightness == Brightness.both) {
-      return list
-          .where((element) => element.brightness == Brightness.both)
-          .toList();
-    }
-
-    return list;
-  }
+  // static List<Piece> filterByBrightness(List<Piece> list) {
+  //   if (brightness == Brightness.light) {
+  //     return list
+  //         .where((element) => (element.brightness == Brightness.light ||
+  //         element.brightness == Brightness.both))
+  //         .toList();
+  //   } else if (brightness == Brightness.dark) {
+  //     return list
+  //         .where((element) => (element.brightness == Brightness.dark||
+  //         element.brightness == Brightness.both))
+  //         .toList();
+  //   } else if (brightness == Brightness.both) {
+  //     return list
+  //         .where((element) => element.brightness == Brightness.both)
+  //         .toList();
+  //   }
+  //
+  //   return list;
+  // }
   static List<Piece> filterByFit(List<Piece> list) {
     if (fit == Fit.tight) {
       return list.where((element) => element.fit == Fit.tight).toList();
@@ -94,10 +94,10 @@ class Filter with ChangeNotifier{
       return element.colors.any((color) => colors.contains(color));
     }).toList();
   }
-  static List<Piece> filterByNew(List<Piece> list, New isNew) {
-    if (isNew == New.all) return list;
-    return list.where((element) => element.isNew == isNew).toList();
-  }
+  // static List<Piece> filterByNew(List<Piece> list, New isNew) {
+  //   if (isNew == New.all) return list;
+  //   return list.where((element) => element.isNew == isNew).toList();
+  // }
 
   void resetFilters() {
     outDoors = OutDoors.all;

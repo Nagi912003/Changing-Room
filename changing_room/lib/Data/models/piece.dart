@@ -1,4 +1,4 @@
-enum Category { shirt, tshirt, pants, shoes, hat, accessory, jacket }
+enum Category { general ,shirt, tshirt, pants, shoes, hat, accessory, jacket }
 
 enum MyColor {
   all,
@@ -28,28 +28,28 @@ enum New { new_, old, all }
 
 class Piece {
   String id;
-  String image;
+  List <String> images;
   List<MyColor> colors;
   Category category;
-  Brightness brightness;
+  // Brightness brightness;
   // String description = '';
   // double price;
   Fit fit;
-  New isNew;
+  // New isNew;
   OutDoors outDoors;
   ForWeather forWeather;
   bool isAvailable = true;
 
   Piece({
     required this.id,
-    required this.image,
+    required this.images,
     required this.colors,
     required this.category,
-    this.brightness = Brightness.light,
+    // this.brightness = Brightness.light,
     // this.description = '',
     // this.price = 0.0,
     this.fit = Fit.regular,
-    this.isNew = New.old,
+    // this.isNew = New.old,
     this.outDoors = OutDoors.outdoor,
     this.forWeather = ForWeather.both,
     this.isAvailable = true,
@@ -57,14 +57,14 @@ class Piece {
   toMap() {
     return {
       'id': id,
-      'image': image,
+      'images': images,
       'colors': colors.map((e) => e.index).toList(),
       'category': category.index,
-      'brightness': brightness.index,
+      // 'brightness': brightness.index,
       // 'description': description,
       // 'price': price,
       'fit': fit.index,
-      'isNew': isNew.index,
+      // 'isNew': isNew.index,
       'outDoors': outDoors.index,
       'forWeather': forWeather.index,
       'isAvailable': isAvailable,
@@ -73,12 +73,12 @@ class Piece {
 
   Piece.fromMap(Map<dynamic, dynamic> map)
       : id = map['id'],
-        image = map['image'],
+        images = map['images'],
         colors = map['colors'].map<MyColor>((e) => MyColor.values[e]).toList(),
         category = Category.values[map['category']],
-        brightness = Brightness.values[map['brightness']],
+        // brightness = Brightness.values[map['brightness']],
         fit = Fit.values[map['fit']],
-        isNew = New.values[map['isNew']],
+        // isNew = New.values[map['isNew']],
         outDoors = OutDoors.values[map['outDoors']],
         forWeather = ForWeather.values[map['forWeather']],
         isAvailable = map['isAvailable'];

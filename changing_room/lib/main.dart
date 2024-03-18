@@ -119,6 +119,7 @@
 // }
 
 ///----------------------------------------------------------------------------------------------------------------
+import 'package:changing_room/UI/screens/home_screen/home_screen.dart';
 import 'package:changing_room/UI/screens/pick_image_screen/pick_image_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -152,76 +153,19 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (BuildContext context) => Filter()),
         ChangeNotifierProvider(create: (BuildContext context) => Favorites()),
       ],
-      child: const CupertinoApp(
-        theme: CupertinoThemeData(
-          primaryColor: Colors.deepPurpleAccent,
+      child: MaterialApp(
+        theme: ThemeData(
+          // brightness: Brightness.dark,
+          useMaterial3: true,
         ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          useMaterial3: true,
+        ),
+        themeMode: ThemeMode.system,
         debugShowCheckedModeBanner: false,
         title: 'Image Saving with Hive',
-        home: ImageSaver(),
-      ),
-    );
-  }
-}
-
-class ImageSaver extends StatefulWidget {
-  const ImageSaver({Key? key}) : super(key: key);
-
-  @override
-  _ImageSaverState createState() => _ImageSaverState();
-}
-
-class _ImageSaverState extends State<ImageSaver> {
-  String? _imagePath;
-  // CameraController? _cameraController;
-
-  @override
-  void initState() {
-    super.initState();
-    // _initCamera();
-    _loadImageFromHive();
-  }
-
-  // Future<void> _initCamera() async {
-  //   final cameras = await availableCameras();
-  //   final firstCamera = cameras.first;
-  //   _cameraController = CameraController(firstCamera, ResolutionPreset.medium);
-  //   await _cameraController?.initialize();
-  //   setState(() {});
-  // }
-
-  Future<void> _loadImageFromHive() async {
-    var box = await Hive.openBox('imageBox');
-    setState(() {
-      _imagePath = box.get('imagePath');
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        // backgroundColor: Colors.transparent,
-        middle: Text('Image Saving with Hive'),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _imagePath != null
-                ? Image.file(File(_imagePath!))
-                : const Text('No image selected.'),
-            const SizedBox(height: 20),
-            CupertinoButton.filled(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const PickImageScreen(),
-                ),
-              ),
-              child: const Text('Pick Image'),
-            ),
-          ],
-        ),
+        home: HomeScreen(),
       ),
     );
   }

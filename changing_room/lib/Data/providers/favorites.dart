@@ -66,73 +66,73 @@ class FavoriteItem {
   FavoriteItem fromMap(Map<dynamic, dynamic> map) {
     selectedHat = map['selectedHat']== null? null:  Piece(
       id: map['selectedHat']['id'],
-      image: map['selectedHat']['image'],
+      images: map['selectedHat']['images'],
       colors: map['selectedHat']['colors'].map<MyColor>((e) =>
       MyColor.values[e]).toList(),
       category: Category.values[map['selectedHat']['category']],
-      brightness: Brightness.values[map['selectedHat']['brightness']],
+      // brightness: Brightness.values[map['selectedHat']['brightness']],
       fit: Fit.values[map['selectedHat']['fit']],
-      isNew: New.values[map['selectedHat']['isNew']],
+      // isNew: New.values[map['selectedHat']['isNew']],
       outDoors: OutDoors.values[map['selectedHat']['outDoors']],
       forWeather: ForWeather.values[map['selectedHat']['forWeather']],
     );
     selectedAccessories = map['selectedAccessories']== null? null: Piece(
       id: map['selectedAccessories']['id'],
-      image: map['selectedAccessories']['image'],
+      images: map['selectedAccessories']['images'],
       colors: map['selectedAccessories']['colors'].map<MyColor>((e) =>
       MyColor.values[e]).toList(),
       category: Category.values[map['selectedAccessories']['category']],
-      brightness: Brightness.values[map['selectedAccessories']['brightness']],
+      // brightness: Brightness.values[map['selectedAccessories']['brightness']],
       fit: Fit.values[map['selectedAccessories']['fit']],
-      isNew: New.values[map['selectedAccessories']['isNew']],
+      // isNew: New.values[map['selectedAccessories']['isNew']],
       outDoors: OutDoors.values[map['selectedAccessories']['outDoors']],
       forWeather: ForWeather.values[map['selectedAccessories']['forWeather']],
     );
     selectedShirt =map['selectedShirt']== null? null: Piece(
       id: map['selectedShirt']['id'],
-      image: map['selectedShirt']['image'],
+      images: map['selectedShirt']['images'],
       colors: map['selectedShirt']['colors'].map<MyColor>((e) =>
       MyColor.values[e]).toList(),
       category: Category.values[map['selectedShirt']['category']],
-      brightness: Brightness.values[map['selectedShirt']['brightness']],
+      // brightness: Brightness.values[map['selectedShirt']['brightness']],
       fit: Fit.values[map['selectedShirt']['fit']],
-      isNew: New.values[map['selectedShirt']['isNew']],
+      // isNew: New.values[map['selectedShirt']['isNew']],
       outDoors: OutDoors.values[map['selectedShirt']['outDoors']],
       forWeather: ForWeather.values[map['selectedShirt']['forWeather']],
     );
     selectedTshirt = map['selectedTshirt']== null? null:  Piece(
       id: map['selectedTshirt']['id'],
-      image: map['selectedTshirt']['image'],
+      images: map['selectedTshirt']['images'],
       colors: map['selectedTshirt']['colors'].map<MyColor>((e) =>
       MyColor.values[ e]).toList(),
       category: Category.values[map['selectedTshirt']['category']],
-      brightness: Brightness.values[map['selectedTshirt']['brightness']],
+      // brightness: Brightness.values[map['selectedTshirt']['brightness']],
       fit: Fit.values[map['selectedTshirt']['fit']],
-      isNew: New.values[map['selectedTshirt']['isNew']],
+      // isNew: New.values[map['selectedTshirt']['isNew']],
       outDoors: OutDoors.values[map['selectedTshirt']['outDoors']],
       forWeather: ForWeather.values[map['selectedTshirt']['forWeather']],
     );
     selectedPants = map['selectedPants']== null? null:  Piece(
       id: map['selectedPants']['id'],
-      image: map['selectedPants']['image'],
+      images: map['selectedPants']['images'],
       colors: map['selectedPants']['colors'].map<MyColor>((e) =>
       MyColor.values[e]).toList(),
       category: Category.values[map['selectedPants']['category']],
-      brightness: Brightness.values[map['selectedPants']['brightness']],
+      // brightness: Brightness.values[map['selectedPants']['brightness']],
       fit: Fit.values[map['selectedPants']['fit']],
-      isNew: New.values[map['selectedPants']['isNew']],
+      // isNew: New.values[map['selectedPants']['isNew']],
       outDoors: OutDoors.values[map['selectedPants']['outDoors']],
       forWeather: ForWeather.values[map['selectedPants']['forWeather']],
     );
     selectedShoes = map['selectedShoes']== null? null:  Piece(
       id: map['selectedShoes']['id'],
-      image: map['selectedShoes']['image'],
+      images: map['selectedShoes']['images'],
       colors: map['selectedShoes']['colors'].map<MyColor>((e) =>
       MyColor.values[e]).toList(),
       category: Category.values[map['selectedShoes']['category']],
-      brightness: Brightness.values[map['selectedShoes']['brightness']],
+      // brightness: Brightness.values[map['selectedShoes']['brightness']],
       fit: Fit.values[map['selectedShoes']['fit']],
-      isNew: New.values[map['selectedShoes']['isNew']],
+      // isNew: New.values[map['selectedShoes']['isNew']],
       outDoors: OutDoors.values[map['selectedShoes']['outDoors']],
       forWeather: ForWeather.values[map['selectedShoes']['forWeather']],
     );
