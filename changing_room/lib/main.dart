@@ -120,11 +120,8 @@
 
 ///----------------------------------------------------------------------------------------------------------------
 import 'package:changing_room/UI/screens/home_screen/home_screen.dart';
-import 'package:changing_room/UI/screens/pick_image_screen/pick_image_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'dart:io';
 
 import 'package:provider/provider.dart';
 
@@ -132,11 +129,22 @@ import 'Data/providers/clothes.dart';
 import 'Data/providers/clothes_filter.dart';
 import 'Data/providers/clothes_selector_provider.dart';
 import 'Data/providers/favorites.dart';
+import 'helpers/clothes_box.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure initialization
   await Hive.initFlutter(); // Initialize Hive
   await Hive.openBox('imageBox'); // Open a Hive box named 'imageBox'
+  await Hive.openBox('shirts');
+  await Hive.openBox('pants');
+  await Hive.openBox('tshirts');
+  await Hive.openBox('shoes');
+  await Hive.openBox('hats');
+  await Hive.openBox('accessories');
+  await Hive.openBox('jackets');
+
+  // ClothesBox.clearAll(); // Clear the box
+  Clothes.loadPieces(); // Load all the clothes
   runApp(const MyApp());
 }
 

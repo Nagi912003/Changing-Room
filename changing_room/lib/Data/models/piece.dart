@@ -1,4 +1,4 @@
-enum Category { general ,shirt, tshirt, pants, shoes, hat, accessory, jacket }
+enum MyCategory { shirt, tshirt, pants, shoes, hat, accessory, jacket ,general }
 
 enum MyColor {
   all,
@@ -28,9 +28,9 @@ enum New { new_, old, all }
 
 class Piece {
   String id;
-  List <String> images;
+  List <String>  images;
   List<MyColor> colors;
-  Category category;
+  MyCategory category;
   // Brightness brightness;
   // String description = '';
   // double price;
@@ -55,6 +55,7 @@ class Piece {
     this.isAvailable = true,
   });
   toMap() {
+    print(category.index);
     return {
       'id': id,
       'images': images,
@@ -75,11 +76,28 @@ class Piece {
       : id = map['id'],
         images = map['images'],
         colors = map['colors'].map<MyColor>((e) => MyColor.values[e]).toList(),
-        category = Category.values[map['category']],
+        category = MyCategory.values[map['category']],
         // brightness = Brightness.values[map['brightness']],
         fit = Fit.values[map['fit']],
         // isNew = New.values[map['isNew']],
         outDoors = OutDoors.values[map['outDoors']],
         forWeather = ForWeather.values[map['forWeather']],
         isAvailable = map['isAvailable'];
+}
+
+class CategoryOutlines {
+  static final Map<MyCategory, List<String>> _outlines = {
+    MyCategory.shirt: [ 'assets/images/outlines/outline.png'],
+    MyCategory.tshirt: ['assets/images/outlines/tshirt-top-outline.png', 'assets/images/outlines/outline.png'],
+    MyCategory.pants: ['assets/images/outlines/tshirt-top-outline.png', 'assets/images/outlines/outline.png'],
+    MyCategory.shoes: ['assets/images/outlines/outline.png'],
+    MyCategory.hat: ['assets/images/outlines/outline.png'],
+    MyCategory.accessory: ['assets/images/outlines/outline.png'],
+    MyCategory.jacket: ['assets/images/outlines/outline.png'],
+    MyCategory.general: ['assets/images/outlines/tshirt-top-outline.png', 'assets/images/outlines/outline.png'],
+  };
+
+  static List<String> getOutline(MyCategory category) {
+    return _outlines[category]!;
+  }
 }

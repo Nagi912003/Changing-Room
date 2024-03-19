@@ -23,22 +23,22 @@ class ClothesSelectorProvider with ChangeNotifier {
 
   void selectPiece(Piece? piece) {
     switch (piece!.category) {
-      case Category.shirt:
+      case MyCategory.shirt:
         selectedShirt = piece;
         break;
-      case Category.tshirt:
+      case MyCategory.tshirt:
         selectedTshirt = piece;
         break;
-      case Category.pants:
+      case MyCategory.pants:
         selectedPants = piece;
         break;
-      case Category.shoes:
+      case MyCategory.shoes:
         selectedShoes = piece;
         break;
-      case Category.hat:
+      case MyCategory.hat:
         selectedHat = piece;
         break;
-      case Category.accessory:
+      case MyCategory.accessory:
         selectedAccessories = piece;
         break;
       default:
@@ -56,17 +56,17 @@ class ClothesSelectorProvider with ChangeNotifier {
   }
   bool isPieceSelected(Piece? piece) {
     switch (piece!.category) {
-      case Category.shirt:
+      case MyCategory.shirt:
         return selectedShirt == piece;
-      case Category.tshirt:
+      case MyCategory.tshirt:
         return selectedTshirt == piece;
-      case Category.pants:
+      case MyCategory.pants:
         return selectedPants == piece;
-      case Category.shoes:
+      case MyCategory.shoes:
         return selectedShoes == piece;
-      case Category.hat:
+      case MyCategory.hat:
         return selectedHat == piece;
-      case Category.accessory:
+      case MyCategory.accessory:
         return selectedAccessories == piece;
       default:
         return false;

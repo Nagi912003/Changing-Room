@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:changing_room/UI/screens/add_clothes_screen/AddClothesScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +25,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool showSettings = false;
 
+    @override
+    void initState() {
+      super.initState();
+      // Provider.of<Clothes>(context, listen: true).loadPieces();
+    }
+
   @override
   Widget build(BuildContext context) {
     final clothesData = Provider.of<Clothes>(context);
@@ -33,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final selectedHat = selectorData.selectedHat;
     final selectedAccessory = selectorData.selectedAccessories;
     final selectedShirt = selectorData.selectedShirt;
+
 
     return SafeArea(
       child: Scaffold(
@@ -119,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   shirts: clothesData.shirts,
                   tShirts: clothesData.tshirts,
                   pants: clothesData.pants,
-                  shoes: clothesData.shoes),
+                  shoes: clothesData.shoes,onLongPress: clothesData.removePiece),
             ),
             // settings list bottom inkwell
             if (showSettings)
@@ -189,6 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Piece> tShirts = const [],
     List<Piece> pants = const [],
     List<Piece> shoes = const [],
+  onLongPress,
   }) {
     return SizedBox(
       height: 400,
@@ -227,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // jackets and shirts list
                 if (shirts.isNotEmpty) choicesList(context, shirts),
                 // t-shirts list
-                if (tShirts.isNotEmpty) choicesList(context, tShirts),
+                if (tShirts.isNotEmpty) choicesList(context, tShirts, onLongPress: onLongPress),
                 // pants list
                 if (pants.isNotEmpty) choicesList(context, pants),
                 // shoes list
@@ -240,7 +250,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget choicesList(BuildContext context, List<Piece> list) {
+  Widget choicesList(BuildContext context, List<Piece> list,
+      {onLongPress}) {
     final selectorData = Provider.of<ClothesSelectorProvider>(context);
     return SizedBox(
       width: MediaQuery.sizeOf(context).width - 100,
@@ -253,6 +264,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: InkWell(
             onTap: () {
               selectorData.toggleSelected(list[index]);
+              // print('selected: ${list[index].images}');
+            },
+            onLongPress: () {
+              onLongPress(list[index], index);
             },
             child: Card(
               color: selectorData.isPieceSelected(list[index])
@@ -260,10 +275,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   : Colors.transparent,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  list[index].images.first,
-                  fit: BoxFit.fitHeight,
-                ),
+                child: list[index].images.isNotEmpty? Image.file(
+                  File(list[index].images[0]),
+                  fit: BoxFit.fitWidth,
+                ): const Icon(Icons.image),
               ),
             ),
           ),

@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../pick_image_screen/pick_image_screen.dart';
-
 class TakeImageButton extends StatefulWidget {
   TakeImageButton({Key? key, required this.imagePaths, this.pieceId}) : super(key: key);
   final String? pieceId;
@@ -50,11 +48,11 @@ class _TakeImageButtonState extends State<TakeImageButton> {
                 )
               : IconButton(
                   onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => PickImageScreen(pieceId: widget.pieceId,),
-                      ),
-                    );
+                    // Navigator.of(context).push(
+                    //   MaterialPageRoute(
+                    //      builder: (context) => PickImageScreen(pieceId: widget.pieceId,),
+                    //   ),
+                    // );
                   },
                   icon: const Icon(Icons.camera_alt,size: 70,),
                 ),

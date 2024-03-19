@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:changing_room/Data/models/piece.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../../Business_Logic/remove_background.dart';
 import '../../../Data/providers/clothes.dart';
 
 // import 'package:image_cropper/image_cropper.dart';
@@ -19,8 +21,9 @@ enum AppState {
 }
 
 class PickImageScreen extends StatefulWidget {
-  const PickImageScreen({Key? key, required this.pieceId}) : super(key: key);
+  const PickImageScreen({Key? key, required this.pieceId, required this.selectedCategory}) : super(key: key);
   final String? pieceId;
+  final MyCategory selectedCategory;
 
   @override
   _PickImageScreenState createState() => _PickImageScreenState();
@@ -43,7 +46,6 @@ class _PickImageScreenState extends State<PickImageScreen> {
   @override
   void initState() {
     super.initState();
-    // _initializeCamera();
     _initCamera();
     state = AppState.free;
   }
@@ -62,6 +64,7 @@ class _PickImageScreenState extends State<PickImageScreen> {
   @override
   Widget build(BuildContext context) {
     final clothes = Provider.of<Clothes>(context);
+    final outlines = CategoryOutlines.getOutline(widget.selectedCategory);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pick Image'),
@@ -108,26 +111,6 @@ class _PickImageScreenState extends State<PickImageScreen> {
                     const SizedBox(height: 16),
                     Stack(
                       children: [
-                        if (state == AppState.free)
-                          Align(
-                            alignment: const Alignment(0, -0.2),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: SizedBox(
-                                // height: MediaQuery.sizeOf(context).width - 16,
-                                width: MediaQuery.sizeOf(context).width - 16,
-                                child: CameraPreview(
-                                  _cameraController,
-                                  child: Image.asset(
-                                    'assets/images/outlines/tshirt-top-outline.png',
-                                    fit: BoxFit.fitWidth,
-                                    width:
-                                        MediaQuery.sizeOf(context).width * 0.9,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
                         if (state == AppState.picked)
                           Align(
                             alignment: Alignment.center,
@@ -140,24 +123,54 @@ class _PickImageScreenState extends State<PickImageScreen> {
                               ),
                             ),
                           ),
+                        if (state == AppState.free && (imagePaths.length < outlines.length))
+                          Align(
+                            alignment: const Alignment(0, -0.2),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: SizedBox(
+                                // height: MediaQuery.sizeOf(context).width - 16,
+                                width: MediaQuery.sizeOf(context).width - 16,
+                                child: CameraPreview(
+                                  _cameraController,
+                                  child: Opacity(
+                                    opacity: 0.5,
+                                    child: Image.asset(
+                                      outlines[imagePaths.length],
+                                      fit: BoxFit.fitWidth,
+                                      width:
+                                          MediaQuery.sizeOf(context).width * 0.9,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                     const SizedBox(height: 16),
                     if (state == AppState.free)
                       CupertinoButton.filled(
-                        onPressed: _takePicture,
-                        child: const Text('Take Picture'),
+                        onPressed: imagePaths.length < outlines.length?_takePicture: (){
+                          clothes.setImages(imagePaths);
+                          Navigator.of(context).pop();
+                        },
+                        child: imagePaths.length < outlines.length?const Text('Take Picture'): const Text('Done'),
                       ),
                     if (state == AppState.picked)
                       Row(
                         children: [
                           CupertinoButton.filled(
                             onPressed: () {
-                              addImagePathToList(_imageFile!);
-                              _clearImage();
+                              addImagePathToList(_imageFile!, outlines.length - 1);
                               clothes.setImages(imagePaths);
+                              _clearImage();
+                              if(state == AppState.done){
+                                saveImagePathsToHive();
+                                Navigator.of(context).pop();
+                              }
                               // clothes.addImage(_imageFile!);
-                              print(clothes.imagesInput);
+                              // print(clothes.imagesInput);
                             },
                             child: const Text('save'),
                           ),
@@ -172,14 +185,6 @@ class _PickImageScreenState extends State<PickImageScreen> {
                       ),
                     const SizedBox(
                       height: 16,
-                    ),
-                    // if (state == AppState.picked)
-                    CupertinoButton.filled(
-                      onPressed: () {
-                        saveImagePathsToHive();
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('save'),
                     ),
                   ],
                 ),
@@ -210,9 +215,19 @@ class _PickImageScreenState extends State<PickImageScreen> {
     }
   }
 
-  void addImagePathToList(String path) {
+  void addImagePathToList(String path, outlinesLength) async {
+    // remove the background with the api
+    // final Future<Uint8List> rbgImage = ApiClient().removeBgApi(path);
+
+    // String newImagePath = path;
+    final String
+    newImagePath = await ImageProcessor().saveNewImage(path, widget.pieceId!, imagePaths.length.toString());
+
     setState(() {
-      imagePaths.add(path);
+      imagePaths.add(newImagePath);
+      if(imagePaths.length >= outlinesLength){
+        // state = AppState.done;
+      }
     });
   }
 
@@ -272,10 +287,10 @@ class _PickImageScreenState extends State<PickImageScreen> {
     });
   }
 
-  Future<void> _saveImagePathToHive(String path, String pieceId) async {
-    var box = await Hive.openBox('imageBox');
-    box.put('imagePath${pieceId}', path);
-  }
+  // Future<void> _saveImagePathToHive(String path, String pieceId) async {
+  //   var box = await Hive.openBox('imageBox');
+  //   box.put('imagePath${pieceId}', path);
+  // }
 
 // Helper to get a file path in the app's temporary directory
 //   Future<String> _getFilePath() async {

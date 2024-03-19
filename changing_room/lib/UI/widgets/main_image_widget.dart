@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../Data/models/piece.dart';
@@ -25,9 +27,9 @@ Widget mainImage({
               child: SizedBox(
                 width: MediaQuery.sizeOf(context).width - 70,
                 height: MediaQuery.sizeOf(context).width - 70,
-                child: Image.asset(
-                  selectedTshirt.images[0],
-                  fit: BoxFit.contain,
+                child: Image.file(
+                  File(selectedTshirt.images[selectedPants == null?0:1]),
+                  fit: BoxFit.fitWidth,
                 ),
               ),
             ),
@@ -39,9 +41,9 @@ Widget mainImage({
                 // color: Colors.brown.shade200,
                 width: MediaQuery.sizeOf(context).width - 70,
                 height: MediaQuery.sizeOf(context).width - 70,
-                child: Image.asset(
-                  selectedPants.images[0],
-                  fit: BoxFit.fitHeight,
+                child: Image.file(
+                  File(selectedPants.images[selectedTshirt == null?0:1]),
+                  fit: BoxFit.fitWidth,
                 ),
               ),
             ),
@@ -52,9 +54,9 @@ Widget mainImage({
               child: SizedBox(
                 width: MediaQuery.sizeOf(context).width - 70,
                 height: MediaQuery.sizeOf(context).width - 70,
-                child: Image.asset(
-                  selectedHat.images[0],
-                  fit: BoxFit.contain,
+                child: Image.file(
+                  File(selectedHat.images[0]),
+                  fit: BoxFit.fitWidth,
                 ),
               ),
             ),
@@ -65,9 +67,9 @@ Widget mainImage({
               child: SizedBox(
                 width: MediaQuery.sizeOf(context).width - 70,
                 height: MediaQuery.sizeOf(context).width - 70,
-                child: Image.asset(
-                  selectedAccessory.images[0],
-                  fit: BoxFit.contain,
+                child: Image.file(
+                  File(selectedAccessory.images[0]),
+                  fit: BoxFit.fitWidth,
                 ),
               ),
             ),
@@ -80,9 +82,9 @@ Widget mainImage({
                 // color: Colors.brown.shade200,
                 width: MediaQuery.sizeOf(context).width - 70,
                 height: MediaQuery.sizeOf(context).width - 70,
-                child: Image.asset(
-                  selectedShoes.images[0],
-                  fit: BoxFit.contain,
+                child: Image.file(
+                  File(selectedShoes.images[0]),
+                  fit: BoxFit.fitWidth,
                 ),
               ),
             ),

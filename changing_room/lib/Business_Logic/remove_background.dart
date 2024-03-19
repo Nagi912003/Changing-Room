@@ -1,3 +1,7 @@
+
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
@@ -7,7 +11,9 @@ class ApiClient {
         "POST", Uri.parse("https://api.remove.bg/v1.0/removebg"));
     request.files
         .add(await http.MultipartFile.fromPath("image_file", imagePath));
-    request.headers.addAll({"X-API-Key": "DTbCFd8MiPDdsn3ge17Pd2FM", "crop": "true" }); //Put Your API key HERE
+    request.headers.addAll({"X-API-Key": "z3H25MLdHX5A3SLsr1ygD3Eg"
+      // , "crop": "false"
+    }); //Put Your API key HERE
     final response = await request.send();
     if (response.statusCode == 200) {
       http.Response imgRes = await http.Response.fromStream(response);
@@ -15,5 +21,20 @@ class ApiClient {
     } else {
       throw Exception("Error occurred with response ${response.statusCode}");
     }
+  }
+}
+
+class ImageProcessor {
+  Future<String> saveNewImage(String imagePath, String id, String count) async {
+    // 1. Get the image data from the API
+    Uint8List imageData = await ApiClient().removeBgApi(imagePath);
+
+    // 2. Save to a new file
+    final directory = await getApplicationDocumentsDirectory();
+    final newImagePath = '${directory.path}/${DateTime.now().millisecond}.jpg'; // Adjust the name
+    final newImageFile = File(newImagePath).writeAsBytesSync(imageData);
+
+    // 3. Return the new path
+    return newImagePath;
   }
 }

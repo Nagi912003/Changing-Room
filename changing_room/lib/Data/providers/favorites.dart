@@ -69,7 +69,7 @@ class FavoriteItem {
       images: map['selectedHat']['images'],
       colors: map['selectedHat']['colors'].map<MyColor>((e) =>
       MyColor.values[e]).toList(),
-      category: Category.values[map['selectedHat']['category']],
+      category: MyCategory.values[map['selectedHat']['category']],
       // brightness: Brightness.values[map['selectedHat']['brightness']],
       fit: Fit.values[map['selectedHat']['fit']],
       // isNew: New.values[map['selectedHat']['isNew']],
@@ -81,7 +81,7 @@ class FavoriteItem {
       images: map['selectedAccessories']['images'],
       colors: map['selectedAccessories']['colors'].map<MyColor>((e) =>
       MyColor.values[e]).toList(),
-      category: Category.values[map['selectedAccessories']['category']],
+      category: MyCategory.values[map['selectedAccessories']['category']],
       // brightness: Brightness.values[map['selectedAccessories']['brightness']],
       fit: Fit.values[map['selectedAccessories']['fit']],
       // isNew: New.values[map['selectedAccessories']['isNew']],
@@ -93,7 +93,7 @@ class FavoriteItem {
       images: map['selectedShirt']['images'],
       colors: map['selectedShirt']['colors'].map<MyColor>((e) =>
       MyColor.values[e]).toList(),
-      category: Category.values[map['selectedShirt']['category']],
+      category: MyCategory.values[map['selectedShirt']['category']],
       // brightness: Brightness.values[map['selectedShirt']['brightness']],
       fit: Fit.values[map['selectedShirt']['fit']],
       // isNew: New.values[map['selectedShirt']['isNew']],
@@ -105,7 +105,7 @@ class FavoriteItem {
       images: map['selectedTshirt']['images'],
       colors: map['selectedTshirt']['colors'].map<MyColor>((e) =>
       MyColor.values[ e]).toList(),
-      category: Category.values[map['selectedTshirt']['category']],
+      category: MyCategory.values[map['selectedTshirt']['category']],
       // brightness: Brightness.values[map['selectedTshirt']['brightness']],
       fit: Fit.values[map['selectedTshirt']['fit']],
       // isNew: New.values[map['selectedTshirt']['isNew']],
@@ -117,7 +117,7 @@ class FavoriteItem {
       images: map['selectedPants']['images'],
       colors: map['selectedPants']['colors'].map<MyColor>((e) =>
       MyColor.values[e]).toList(),
-      category: Category.values[map['selectedPants']['category']],
+      category: MyCategory.values[map['selectedPants']['category']],
       // brightness: Brightness.values[map['selectedPants']['brightness']],
       fit: Fit.values[map['selectedPants']['fit']],
       // isNew: New.values[map['selectedPants']['isNew']],
@@ -129,7 +129,7 @@ class FavoriteItem {
       images: map['selectedShoes']['images'],
       colors: map['selectedShoes']['colors'].map<MyColor>((e) =>
       MyColor.values[e]).toList(),
-      category: Category.values[map['selectedShoes']['category']],
+      category: MyCategory.values[map['selectedShoes']['category']],
       // brightness: Brightness.values[map['selectedShoes']['brightness']],
       fit: Fit.values[map['selectedShoes']['fit']],
       // isNew: New.values[map['selectedShoes']['isNew']],

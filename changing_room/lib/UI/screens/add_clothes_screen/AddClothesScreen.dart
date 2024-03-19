@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:changing_room/Data/models/piece.dart';
 import 'package:changing_room/Data/providers/clothes.dart';
-import 'package:changing_room/UI/screens/add_clothes_screen/widgets/take_image_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,8 +17,8 @@ class AddClothesScreen extends StatefulWidget {
 
 class _AddClothesScreenState extends State<AddClothesScreen> {
   String pieceId = '';
-  List<String> imagePaths = [];
-  Category selectedCategory = Category.general;
+  // List<String> imagePaths = [];
+  MyCategory selectedCategory = MyCategory.general;
   List<MyColor> selectedColors = [MyColor.all];
   OutDoors selectedOutDoors = OutDoors.all;
   ForWeather selectedForWeather = ForWeather.all;
@@ -29,10 +29,17 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
   Widget build(BuildContext context) {
     final clothes = Provider.of<Clothes>(context);
     final imagesInput = clothes.imagesInput;
-    pieceId = clothes.all.length.toString();
+    pieceId = clothes.id;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Piece'),
+        leading: IconButton(
+          onPressed: () {
+            clothes.imagesInput.clear();
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -43,7 +50,7 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
               selectCategoryWithChoiceChips(
                   title: 'Category',
                   selectedValue: selectedCategory,
-                  onChanged: (Category value) {
+                  onChanged: (MyCategory value) {
                     setState(() {
                       selectedCategory = value;
                     });
@@ -58,7 +65,7 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => PickImageScreen(pieceId: pieceId,),
+                            builder: (context) => PickImageScreen(pieceId: pieceId,selectedCategory: selectedCategory),
                           ),
                         );
                       },
@@ -122,19 +129,23 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
               }),
               const SizedBox(height: 16.0),
               Center(
-                child: ElevatedButton(
+                child: CupertinoButton.filled(
                   onPressed: () {
+                    // print(imagesInput);
+                    final List<String> imagesPaths = List <String>.from(imagesInput);
                     final piece = Piece(
                       id: pieceId,
-                      images: imagePaths,
+                      images: imagesPaths,
                       colors: selectedColors,
                       category: selectedCategory,
                       fit: selectedFit,
                       outDoors: selectedOutDoors,
                       forWeather: selectedForWeather,
                     );
+                    // print('images from addScreen : ${piece.images}');
                     // savePiece(piece);
                     clothes.addPiece(piece);
+                    clothes.imagesInput.clear();
                     Navigator.of(context).pop();
                   },
                   child: const Text('Add Piece'),
@@ -149,8 +160,8 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
 
   Widget selectCategoryWithChoiceChips(
       {required String title,
-      required Category selectedValue,
-      required ValueChanged<Category> onChanged}) {
+      required MyCategory selectedValue,
+      required ValueChanged<MyCategory> onChanged}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -160,15 +171,15 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
         ),
         Wrap(
           spacing: 8.0,
-          children: Category.values.map<Widget>(
-            (Category newValue) {
+          children: MyCategory.values.map<Widget>(
+            (MyCategory newValue) {
               final isSelected = selectedValue == newValue;
               return ChoiceChip(
                 label: Text(newValue.toString().split('.')[1]),
                 selected: isSelected,
                 onSelected: (isSelected) {
                   setState(() {
-                    onChanged(isSelected ? newValue : Category.tshirt);
+                    onChanged(isSelected ? newValue : MyCategory.tshirt);
                   });
                 },
               );
