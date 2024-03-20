@@ -5,7 +5,33 @@ import '../models/piece.dart';
 
 import 'clothes_filter.dart';
 
+enum AppState {
+  free,
+  picked,
+  processing,
+  done,
+}
+
 class Clothes with ChangeNotifier {
+
+  AppState state = AppState.free;
+  stateProcessing() {
+    state = AppState.processing;
+    notifyListeners();
+  }
+  stateDone() {
+    state = AppState.done;
+    notifyListeners();
+  }
+  stateFree() {
+    state = AppState.free;
+    notifyListeners();
+  }
+  statePicked() {
+    state = AppState.picked;
+    notifyListeners();
+  }
+
   static int _idCounter = 0;
 
   get id {
