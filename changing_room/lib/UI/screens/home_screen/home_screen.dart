@@ -233,15 +233,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(width: MediaQuery.sizeOf(context).width - 100),
                 // hats & accessories list
                 if (hats.isNotEmpty || accessories.isNotEmpty)
-                  choicesList(context, [...hats, ...accessories]),
+                  choicesList(context, [...hats, ...accessories], onLongPress: onLongPress),
                 // jackets and shirts list
-                if (shirts.isNotEmpty) choicesList(context, shirts),
+                if (shirts.isNotEmpty) choicesList(context, shirts, onLongPress: onLongPress),
                 // t-shirts list
                 if (tShirts.isNotEmpty) choicesList(context, tShirts, onLongPress: onLongPress),
                 // pants list
-                if (pants.isNotEmpty) choicesList(context, pants),
+                if (pants.isNotEmpty) choicesList(context, pants, onLongPress: onLongPress),
                 // shoes list
-                if (shoes.isNotEmpty) choicesList(context, shoes),
+                if (shoes.isNotEmpty) choicesList(context, shoes, onLongPress: onLongPress),
               ],
             ),
           ],

@@ -12,7 +12,8 @@ class ApiClient {
     request.files
         .add(await http.MultipartFile.fromPath("image_file", imagePath));
     request.headers.addAll({"X-API-Key": "z3H25MLdHX5A3SLsr1ygD3Eg"
-      // , "crop": "false"
+      , "crop": "true"
+      , "crop_margin": "10px"
     }); //Put Your API key HERE
     final response = await request.send();
     if (response.statusCode == 200) {

@@ -36,7 +36,7 @@ class _PickImageScreenState extends State<PickImageScreen> {
       lensDirection: CameraLensDirection.front,
       sensorOrientation: 0,
     ),
-    ResolutionPreset.medium,
+    ResolutionPreset.max,
   );
   String? _imageFile;
   List<String> imagePaths = [];
@@ -77,9 +77,9 @@ class _PickImageScreenState extends State<PickImageScreen> {
                 child: Column(
                   // alignment: Alignment.center,
                   children: [
-                    imagePaths.isNotEmpty
-                        ? SizedBox(
-                            height: 100,
+                     AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                            height: imagePaths.isNotEmpty ?100:0,
                             width: MediaQuery.sizeOf(context).width - 16,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
@@ -104,9 +104,6 @@ class _PickImageScreenState extends State<PickImageScreen> {
                                 );
                               },
                             ),
-                          )
-                        : const SizedBox(
-                            height: 100,
                           ),
                     const SizedBox(height: 16),
                     Stack(
@@ -130,16 +127,16 @@ class _PickImageScreenState extends State<PickImageScreen> {
                               borderRadius: BorderRadius.circular(10),
                               child: SizedBox(
                                 // height: MediaQuery.sizeOf(context).width - 16,
-                                width: MediaQuery.sizeOf(context).width - 16,
+                                width: MediaQuery.sizeOf(context).width,
                                 child: CameraPreview(
                                   _cameraController,
                                   child: Opacity(
                                     opacity: 0.5,
                                     child: Image.asset(
                                       outlines[imagePaths.length],
-                                      fit: BoxFit.fitWidth,
+                                      // fit: BoxFit.fitWidth,
                                       width:
-                                          MediaQuery.sizeOf(context).width * 0.9,
+                                          MediaQuery.sizeOf(context).width,
                                     ),
                                   ),
                                 ),

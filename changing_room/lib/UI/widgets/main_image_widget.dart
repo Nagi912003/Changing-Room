@@ -25,8 +25,8 @@ Widget mainImage({
             Align(
               // alignment: const Alignment(0.75, 0),
               child: SizedBox(
-                width: MediaQuery.sizeOf(context).width - 70,
-                height: MediaQuery.sizeOf(context).width - 70,
+                width: MediaQuery.sizeOf(context).width,
+                height: MediaQuery.sizeOf(context).width,
                 child: Image.file(
                   File(selectedTshirt.images[selectedPants == null?0:1]),
                   fit: BoxFit.fitWidth,
@@ -39,8 +39,8 @@ Widget mainImage({
               // alignment: const Alignment(-0.75, 0),
               child: SizedBox(
                 // color: Colors.brown.shade200,
-                width: MediaQuery.sizeOf(context).width - 70,
-                height: MediaQuery.sizeOf(context).width - 70,
+                width: MediaQuery.sizeOf(context).width,
+                height: MediaQuery.sizeOf(context).width,
                 child: Image.file(
                   File(selectedPants.images[selectedTshirt == null?0:1]),
                   fit: BoxFit.fitWidth,
@@ -52,8 +52,8 @@ Widget mainImage({
             Align(
               // alignment: const Alignment(0.8, 0.5),
               child: SizedBox(
-                width: MediaQuery.sizeOf(context).width - 70,
-                height: MediaQuery.sizeOf(context).width - 70,
+                width: MediaQuery.sizeOf(context).width,
+                height: MediaQuery.sizeOf(context).width,
                 child: Image.file(
                   File(selectedHat.images[0]),
                   fit: BoxFit.fitWidth,
@@ -65,8 +65,8 @@ Widget mainImage({
             Align(
               alignment: const Alignment(-1, -0.40),
               child: SizedBox(
-                width: MediaQuery.sizeOf(context).width - 70,
-                height: MediaQuery.sizeOf(context).width - 70,
+                width: MediaQuery.sizeOf(context).width,
+                height: MediaQuery.sizeOf(context).width,
                 child: Image.file(
                   File(selectedAccessory.images[0]),
                   fit: BoxFit.fitWidth,
