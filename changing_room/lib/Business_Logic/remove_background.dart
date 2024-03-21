@@ -14,6 +14,8 @@ class ApiClient {
     request.headers.addAll({"X-API-Key": "z3H25MLdHX5A3SLsr1ygD3Eg"
       , "crop": "true"
       , "crop_margin": "10px"
+      , "type": "clothes"
+      , "size": "auto"
     }); //Put Your API key HERE
     final response = await request.send();
     if (response.statusCode == 200) {

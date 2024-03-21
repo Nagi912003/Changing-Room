@@ -13,6 +13,7 @@ Widget mainImage({
   Piece? selectedHat,
   Piece? selectedAccessory,
   Piece? selectedShirt,
+  Piece? selectedJacket,
 }) {
   return SizedBox(
     width: widthXHeight,
@@ -20,15 +21,15 @@ Widget mainImage({
     child: Card(
       child: Stack(
         children: [
-          //t-shirt
-          if (selectedTshirt != null)
+          //jackt
+          if (selectedJacket != null)
             Align(
               // alignment: const Alignment(0.75, 0),
               child: SizedBox(
                 width: MediaQuery.sizeOf(context).width,
                 height: MediaQuery.sizeOf(context).width,
                 child: Image.file(
-                  File(selectedTshirt.images[selectedPants == null?0:1]),
+                  File(selectedJacket.images[0]),
                   fit: BoxFit.fitWidth,
                 ),
               ),
@@ -42,7 +43,20 @@ Widget mainImage({
                 width: MediaQuery.sizeOf(context).width,
                 height: MediaQuery.sizeOf(context).width,
                 child: Image.file(
-                  File(selectedPants.images[selectedTshirt == null?0:1]),
+                  File(selectedPants.images[selectedTshirt != null || selectedJacket != null?1:0]),
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
+            ),
+          //t-shirt
+          if (selectedTshirt != null)
+            Align(
+              // alignment: const Alignment(0.75, 0),
+              child: SizedBox(
+                width: MediaQuery.sizeOf(context).width,
+                height: MediaQuery.sizeOf(context).width,
+                child: Image.file(
+                  File(selectedTshirt.images[selectedPants != null || selectedJacket != null?1:0]),
                   fit: BoxFit.fitWidth,
                 ),
               ),

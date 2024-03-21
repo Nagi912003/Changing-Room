@@ -121,6 +121,7 @@
 ///----------------------------------------------------------------------------------------------------------------
 import 'package:changing_room/UI/screens/home_screen/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:provider/provider.dart';
@@ -153,28 +154,37 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (BuildContext context) => Clothes()),
-        ChangeNotifierProvider(
-            create: (BuildContext context) => ClothesSelectorProvider()),
-        ChangeNotifierProvider(create: (BuildContext context) => Filter()),
-        ChangeNotifierProvider(create: (BuildContext context) => Favorites()),
-      ],
-      child: MaterialApp(
-        theme: ThemeData(
-          // brightness: Brightness.dark,
-          useMaterial3: true,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          useMaterial3: true,
-        ),
-        themeMode: ThemeMode.system,
-        debugShowCheckedModeBanner: false,
-        title: 'Image Saving with Hive',
-        home: HomeScreen(),
-      ),
-    );
+    return ScreenUtilInit(
+        designSize: const Size(411.42857142857144, 914.2857142857143),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(
+                  create: (BuildContext context) => Clothes()),
+              ChangeNotifierProvider(
+                  create: (BuildContext context) => ClothesSelectorProvider()),
+              ChangeNotifierProvider(
+                  create: (BuildContext context) => Filter()),
+              ChangeNotifierProvider(
+                  create: (BuildContext context) => Favorites()),
+            ],
+            child: MaterialApp(
+              theme: ThemeData(
+                // brightness: Brightness.dark,
+                useMaterial3: true,
+              ),
+              darkTheme: ThemeData(
+                brightness: Brightness.dark,
+                useMaterial3: true,
+              ),
+              themeMode: ThemeMode.dark,
+              debugShowCheckedModeBanner: false,
+              title: 'Image Saving with Hive',
+              home: HomeScreen(),
+            ),
+          );
+        });
   }
 }

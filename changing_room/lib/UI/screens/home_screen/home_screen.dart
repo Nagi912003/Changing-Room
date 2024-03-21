@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:changing_room/UI/screens/add_clothes_screen/AddClothesScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import 'package:changing_room/Data/models/piece.dart';
@@ -25,11 +26,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool showSettings = false;
 
-    @override
-    void initState() {
-      super.initState();
-      // Provider.of<Clothes>(context, listen: true).loadPieces();
-    }
+  @override
+  void initState() {
+    super.initState();
+    // Provider.of<Clothes>(context, listen: true).loadPieces();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,94 +42,122 @@ class _HomeScreenState extends State<HomeScreen> {
     final selectedHat = selectorData.selectedHat;
     final selectedAccessory = selectorData.selectedAccessories;
     final selectedShirt = selectorData.selectedShirt;
-
+    final selectedJacket = selectorData.selectedJacket;
 
     return SafeArea(
       child: Scaffold(
         body: Stack(
           children: [
             // title
-            const Positioned(
-              top: 10,
-              left: 70,
-              child: Text('My cupboard', style: TextStyle(fontSize: 28)),
-            ),
-            // main image
-            Align(
-              alignment: const Alignment(0, -0.7),
-              child: SizedBox(
-                height: MediaQuery.sizeOf(context).width,
-                child: Stack(
-                  children: [
-                    mainImage(
-                        context: context,
-                        widthXHeight: MediaQuery.sizeOf(context).width,
-                        selectedAccessory: selectedAccessory,
-                        selectedHat: selectedHat,
-                        selectedPants: selectedPants,
-                        selectedShirt: selectedShirt,
-                        selectedShoes: selectedShoes,
-                        selectedTshirt: selectedTshirt),
-
-                    //add to favorites button
-                    Align(
-                      alignment: const Alignment(0.9, -0.9),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.add_circle_outline,
-                          color: Theme.of(context).primaryColorLight,
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.settings,
                           size: 40,
                         ),
-                        onPressed: () {
-                          FavoriteItem favoriteItem = FavoriteItem(
-                            selectedHat: selectedHat,
-                            selectedAccessories: selectedAccessory,
-                            selectedShirt: selectedShirt,
-                            selectedTshirt: selectedTshirt,
-                            selectedPants: selectedPants,
-                            selectedShoes: selectedShoes,
-                          );
-                          // Provider.of<Favorites>(context, listen: false)
-                          //     .addFavorite(favoriteItem);
-                          if (Provider.of<Favorites>(context, listen: false)
-                              .addFavorite(favoriteItem)) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                content: const Text('Added to favorites'),
-                                duration: const Duration(seconds: 1),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.error,
-                                content: const Text('Please select all items'),
-                                duration: const Duration(seconds: 1),
-                              ),
-                            );
-                          }
-                        },
+                        onPressed: () => setState(() => showSettings = !showSettings),
                       ),
+                      const Text('My cupboard', style: TextStyle(fontSize: 28)),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.favorite,
+                          size: 40,
+                        ),
+                        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const FavoritesScreen())),
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.restart_alt,
+                          size: 40,
+                        ),
+                        onPressed: () => setState(() => selectorData.deselectAll()),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  SizedBox(
+                    height: MediaQuery.sizeOf(context).width,
+                    child: Stack(
+                      children: [
+                        mainImage(
+                          context: context,
+                          widthXHeight: MediaQuery.sizeOf(context).width,
+                          selectedAccessory: selectedAccessory,
+                          selectedHat: selectedHat,
+                          selectedPants: selectedPants,
+                          selectedShirt: selectedShirt,
+                          selectedShoes: selectedShoes,
+                          selectedTshirt: selectedTshirt,
+                          selectedJacket: selectedJacket,
+                        ),
+
+                        //add to favorites button
+                        Align(
+                          alignment: const Alignment(0.9, -0.9),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.add_circle_outline,
+                              color: Theme.of(context).primaryColorLight,
+                              size: 40,
+                            ),
+                            onPressed: () {
+                              FavoriteItem favoriteItem = FavoriteItem(
+                                selectedHat: selectedHat,
+                                selectedAccessories: selectedAccessory,
+                                selectedShirt: selectedShirt,
+                                selectedTshirt: selectedTshirt,
+                                selectedPants: selectedPants,
+                                selectedShoes: selectedShoes,
+                              );
+                              // Provider.of<Favorites>(context, listen: false)
+                              //     .addFavorite(favoriteItem);
+                              if (Provider.of<Favorites>(context, listen: false)
+                                  .addFavorite(favoriteItem)) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                    content: const Text('Added to favorites'),
+                                    duration: const Duration(seconds: 1),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor:
+                                    Theme.of(context).colorScheme.error,
+                                    content: const Text('Please select all items'),
+                                    duration: const Duration(seconds: 1),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  clothsColumn(
+                    context,
+                    hats: clothesData.hats,
+                    accessories: clothesData.accessories,
+                    shirts: clothesData.shirts,
+                    tShirts: clothesData.tshirts,
+                    pants: clothesData.pants,
+                    shoes: clothesData.shoes,
+                    jackets: clothesData.jackets,
+                    onLongPress: clothesData.removePiece,
+                  ),
+                ],
               ),
-            ),
-            // clothes column list
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: clothsColumn(context,
-                  hats: clothesData.hats,
-                  accessories: clothesData.accessories,
-                  shirts: clothesData.shirts,
-                  tShirts: clothesData.tshirts,
-                  pants: clothesData.pants,
-                  shoes: clothesData.shoes,onLongPress: clothesData.removePiece),
             ),
             // settings list bottom inkwell
             if (showSettings)
@@ -140,43 +169,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: MediaQuery.sizeOf(context).width,
                 ),
               ),
-            // settings button
-            Positioned(
-              top: 0,
-              left: 0,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.settings,
-                  size: 40,
-                ),
-                onPressed: () => setState(() => showSettings = !showSettings),
-              ),
-            ),
-            // reset button
-            Positioned(
-              top: 0,
-              right: 0,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.restart_alt,
-                  size: 40,
-                ),
-                onPressed: () => setState(() => selectorData.deselectAll()),
-              ),
-            ),
-            // open favorites button
-            Positioned(
-              top: 0,
-              right: 70,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.favorite,
-                  size: 40,
-                ),
-                onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const FavoritesScreen())),
-              ),
-            ),
             // settings list
             Positioned(
               top: 0,
@@ -198,7 +190,8 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Piece> tShirts = const [],
     List<Piece> pants = const [],
     List<Piece> shoes = const [],
-  onLongPress,
+    List<Piece> jackets = const [],
+    onLongPress,
   }) {
     return SizedBox(
       height: 400,
@@ -233,15 +226,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(width: MediaQuery.sizeOf(context).width - 100),
                 // hats & accessories list
                 if (hats.isNotEmpty || accessories.isNotEmpty)
-                  choicesList(context, [...hats, ...accessories], onLongPress: onLongPress),
+                  choicesList(context, [...hats, ...accessories],
+                      onLongPress: onLongPress),
                 // jackets and shirts list
-                if (shirts.isNotEmpty) choicesList(context, shirts, onLongPress: onLongPress),
+                if (shirts.isNotEmpty)
+                  choicesList(context, shirts, onLongPress: onLongPress),
                 // t-shirts list
-                if (tShirts.isNotEmpty) choicesList(context, tShirts, onLongPress: onLongPress),
+                if (tShirts.isNotEmpty)
+                  choicesList(context, tShirts, onLongPress: onLongPress),
                 // pants list
-                if (pants.isNotEmpty) choicesList(context, pants, onLongPress: onLongPress),
+                if (pants.isNotEmpty)
+                  choicesList(context, pants, onLongPress: onLongPress),
                 // shoes list
-                if (shoes.isNotEmpty) choicesList(context, shoes, onLongPress: onLongPress),
+                if (shoes.isNotEmpty)
+                  choicesList(context, shoes, onLongPress: onLongPress),
+                if (jackets.isNotEmpty)
+                  choicesList(context, jackets, onLongPress: onLongPress),
               ],
             ),
           ],
@@ -250,8 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget choicesList(BuildContext context, List<Piece> list,
-      {onLongPress}) {
+  Widget choicesList(BuildContext context, List<Piece> list, {onLongPress}) {
     final selectorData = Provider.of<ClothesSelectorProvider>(context);
     return SizedBox(
       width: MediaQuery.sizeOf(context).width - 100,
@@ -275,10 +274,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   : Colors.transparent,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: list[index].images.isNotEmpty? Image.file(
-                  File(list[index].images[0]),
-                  fit: BoxFit.fitWidth,
-                ): const Icon(Icons.image),
+                child: list[index].images.isNotEmpty
+                    ? Image.file(
+                        File(list[index].images[0]),
+                        fit: BoxFit.fitWidth,
+                      )
+                    : const Icon(Icons.image),
               ),
             ),
           ),

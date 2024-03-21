@@ -88,13 +88,13 @@ class Piece {
 class CategoryOutlines {
   static final Map<MyCategory, List<String>> _outlines = {
     MyCategory.shirt: [ 'assets/images/outlines/outline.png'],
-    MyCategory.tshirt: ['assets/images/outlines/tshirt-top-outline.png', 'assets/images/outlines/outline.png'],
-    MyCategory.pants: ['assets/images/outlines/tshirt-top-outline.png', 'assets/images/outlines/outline.png'],
+    MyCategory.tshirt: ['assets/images/outlines/tshirt-outline.png', 'assets/images/outlines/outline.png'],
+    MyCategory.pants: ['assets/images/outlines/tshirt-outline.png', 'assets/images/outlines/outline.png'],
     MyCategory.shoes: ['assets/images/outlines/outline.png'],
     MyCategory.hat: ['assets/images/outlines/outline.png'],
     MyCategory.accessory: ['assets/images/outlines/outline.png'],
     MyCategory.jacket: ['assets/images/outlines/outline.png'],
-    MyCategory.general: ['assets/images/outlines/tshirt-top-outline.png', 'assets/images/outlines/outline.png'],
+    MyCategory.general: ['assets/images/outlines/tshirt-outline.png', 'assets/images/outlines/outline.png'],
   };
 
   static List<String> getOutline(MyCategory category) {

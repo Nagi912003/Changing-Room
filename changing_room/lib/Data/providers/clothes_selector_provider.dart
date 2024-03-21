@@ -11,6 +11,7 @@ class ClothesSelectorProvider with ChangeNotifier {
   Piece? selectedTshirt;
   Piece? selectedPants;
   Piece? selectedShoes;
+  Piece? selectedJacket;
 
   ClothesSelectorProvider({
     this.selectedHat,
@@ -19,6 +20,7 @@ class ClothesSelectorProvider with ChangeNotifier {
     this.selectedTshirt,
     this.selectedPants,
     this.selectedShoes,
+    this.selectedJacket,
   });
 
   void selectPiece(Piece? piece) {
@@ -41,6 +43,9 @@ class ClothesSelectorProvider with ChangeNotifier {
       case MyCategory.accessory:
         selectedAccessories = piece;
         break;
+      case MyCategory.jacket:
+        selectedJacket = piece;
+        break;
       default:
     }
     notifyListeners();
@@ -52,6 +57,7 @@ class ClothesSelectorProvider with ChangeNotifier {
     if (selectedTshirt == piece) selectedTshirt = null;
     if (selectedPants == piece) selectedPants = null;
     if (selectedShoes == piece) selectedShoes = null;
+    if (selectedJacket == piece) selectedJacket = null;
     notifyListeners();
   }
   bool isPieceSelected(Piece? piece) {
@@ -68,6 +74,8 @@ class ClothesSelectorProvider with ChangeNotifier {
         return selectedHat == piece;
       case MyCategory.accessory:
         return selectedAccessories == piece;
+      case MyCategory.jacket:
+        return selectedJacket == piece;
       default:
         return false;
     }
@@ -86,6 +94,7 @@ class ClothesSelectorProvider with ChangeNotifier {
     selectedTshirt = null;
     selectedPants = null;
     selectedShoes = null;
+    selectedJacket = null;
     notifyListeners();
   }
 }

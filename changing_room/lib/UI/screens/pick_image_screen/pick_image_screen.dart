@@ -27,8 +27,8 @@ class _PickImageScreenState extends State<PickImageScreen> {
   final CameraController _cameraController = CameraController(
     const CameraDescription(
       name: '0',
-      lensDirection: CameraLensDirection.front,
-      sensorOrientation: 0,
+      lensDirection: CameraLensDirection.back,
+      sensorOrientation: 270,
     ),
     ResolutionPreset.high,
   );
@@ -49,6 +49,11 @@ class _PickImageScreenState extends State<PickImageScreen> {
 
   Future<void> _initCamera() async {
     await _cameraController.initialize();
+    // await _cameraController.setZoomLevel(1);
+    // print available cameras
+    final cameras = await availableCameras();
+    print('cameras: ---------------------------------\n\n\n\n$cameras\n\n\n\n---------------------------------');
+    // open the flash
     setState(() {});
   }
 
