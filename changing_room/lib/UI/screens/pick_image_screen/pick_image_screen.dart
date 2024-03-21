@@ -30,7 +30,7 @@ class _PickImageScreenState extends State<PickImageScreen> {
       lensDirection: CameraLensDirection.back,
       sensorOrientation: 90,
     ),
-    ResolutionPreset.high,
+    ResolutionPreset.max,
   );
   final String bgRemoverAPIKey = 'DTbCFd8MiPDdsn3ge17Pd2FM';
 
@@ -57,14 +57,16 @@ class _PickImageScreenState extends State<PickImageScreen> {
                 CameraLensDirection.back,
                 sensorOrientation: 90,
               ),
-              ResolutionPreset.high,
+              ResolutionPreset.max,
             );
     }
+    _cameraController.setFlashMode(FlashMode.off);
     await _cameraController.initialize();
     // await _cameraController.setZoomLevel(1);
     // print available cameras
-    print(
-        'cameras: ---------------------------------\n\n\n\n$cameras\n\n\n\n---------------------------------');
+    if (kDebugMode) {
+      print('cameras: ---------------------------------\n\n\n\n$cameras\n\n\n\n---------------------------------');
+    }
     // open the flash
     setState(() {});
   }
@@ -80,9 +82,6 @@ class _PickImageScreenState extends State<PickImageScreen> {
     final clothes = Provider.of<Clothes>(context);
     final outlines = CategoryOutlines.getOutline(widget.selectedCategory);
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Pick Image'),
-      // ),
       body: !_cameraController.value.isInitialized
           ? const Center(child: CircularProgressIndicator())
           : Stack(

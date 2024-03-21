@@ -11,9 +11,9 @@ class ApiClient {
         "POST", Uri.parse("https://api.remove.bg/v1.0/removebg"));
     request.files
         .add(await http.MultipartFile.fromPath("image_file", imagePath));
-    request.headers.addAll({"X-API-Key": "z3H25MLdHX5A3SLsr1ygD3Eg"
-      , "crop": "true"
-      , "crop_margin": "10px"
+    request.headers.addAll({"X-API-Key": "4EBpzsf6oeWejxtCKnRVJumy"
+      // , "crop": "true"
+      // , "crop_margin": "10px"
       , "type": "clothes"
       , "size": "auto"
     }); //Put Your API key HERE
