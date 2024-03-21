@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 import '../../../Business_Logic/remove_background.dart';
 import '../../../Data/providers/clothes.dart';
 
-
 class PickImageScreen extends StatefulWidget {
   const PickImageScreen(
       {Key? key, required this.pieceId, required this.selectedCategory})
@@ -24,11 +23,12 @@ class PickImageScreen extends StatefulWidget {
 }
 
 class _PickImageScreenState extends State<PickImageScreen> {
-  final CameraController _cameraController = CameraController(
+  late final List cameras;
+  CameraController _cameraController = CameraController(
     const CameraDescription(
       name: '0',
       lensDirection: CameraLensDirection.back,
-      sensorOrientation: 270,
+      sensorOrientation: 90,
     ),
     ResolutionPreset.high,
   );
@@ -48,11 +48,23 @@ class _PickImageScreenState extends State<PickImageScreen> {
   }
 
   Future<void> _initCamera() async {
+    cameras = await availableCameras();
+    if (cameras.length > 2) {
+      _cameraController = CameraController(
+              const CameraDescription(
+                name: '2',
+                lensDirection:
+                CameraLensDirection.back,
+                sensorOrientation: 90,
+              ),
+              ResolutionPreset.high,
+            );
+    }
     await _cameraController.initialize();
     // await _cameraController.setZoomLevel(1);
     // print available cameras
-    final cameras = await availableCameras();
-    print('cameras: ---------------------------------\n\n\n\n$cameras\n\n\n\n---------------------------------');
+    print(
+        'cameras: ---------------------------------\n\n\n\n$cameras\n\n\n\n---------------------------------');
     // open the flash
     setState(() {});
   }
@@ -105,14 +117,25 @@ class _PickImageScreenState extends State<PickImageScreen> {
                 ),
                 // list of images
                 Positioned(
-                  top: (MediaQuery.sizeOf(context).height - MediaQuery.sizeOf(context).width)/2 - 110 ,
+                  top: (MediaQuery.sizeOf(context).height -
+                              MediaQuery.sizeOf(context).width) /
+                          2 -
+                      110,
                   child: buildImageList(),
                 ),
                 if (clothes.state == AppState.free)
                   Positioned(
-                    bottom: (MediaQuery.sizeOf(context).height - MediaQuery.sizeOf(context).width)/2 - 100,
+                    bottom: (MediaQuery.sizeOf(context).height -
+                                MediaQuery.sizeOf(context).width) /
+                            2 -
+                        100,
                     child: imagePaths.length < outlines.length
-                        ? buildTakePictureButton()
+                        ? Row(
+                            children: [
+                              buildTakePictureButton(),
+
+                            ],
+                          )
                         : buildDoneButton(clothes.setImages),
                   ),
                 if (clothes.state == AppState.picked)
@@ -170,7 +193,8 @@ class _PickImageScreenState extends State<PickImageScreen> {
         fit: BoxFit.cover,
       );
     }
-    if (clothes.state == AppState.free && (imagePaths.length < outlines.length)) {
+    if (clothes.state == AppState.free &&
+        (imagePaths.length < outlines.length)) {
       cameraPreview = CameraPreview(
         _cameraController,
         child: Opacity(
@@ -179,6 +203,7 @@ class _PickImageScreenState extends State<PickImageScreen> {
             outlines[imagePaths.length],
             fit: BoxFit.fitWidth,
             width: MediaQuery.sizeOf(context).width,
+            color: const Color(0xffffffff),
           ),
         ),
       );
@@ -263,20 +288,19 @@ class _PickImageScreenState extends State<PickImageScreen> {
     // String newImagePath = path;
     // imageinProcess = true;
     // setState(() {
-      clothes.stateProcessing();
+    clothes.stateProcessing();
     // });
 
     final String newImagePath = await ImageProcessor()
         .saveNewImage(path, widget.pieceId!, imagePaths.length.toString());
-      imagePaths.add(newImagePath);
+    imagePaths.add(newImagePath);
     setState(() {
       if (imagePaths.length >= outlinesLength) {
         // state = AppState.done;
       }
-        clothes.stateFree();
+      clothes.stateFree();
     });
   }
-
 
   // void saveImagePathsToHive() async {
   //   var box = await Hive.openBox('imageBox');
