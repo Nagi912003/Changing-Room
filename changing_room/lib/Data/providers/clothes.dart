@@ -1,6 +1,11 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:changing_room/helpers/clothes_box.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
+import '../../Business_Logic/remove_background.dart';
 import '../models/piece.dart';
 
 import 'clothes_filter.dart';
@@ -220,6 +225,52 @@ class Clothes with ChangeNotifier {
     _accessories.addAll(await ClothesBox.getPieces('accessories').then((value) => value.map((e) => Piece.fromMap(e)).toList()));
 
     // notifyListeners();
+  }
+
+  Future<String> saveNewImage(String imagePath, String id, int count) async {
+    state = AppState.processing;
+    notifyListeners();
+
+
+    // await Future.delayed(Duration(seconds: 3));
+    // final newImagePath = imagePath;
+
+    // 1. Get the image data from the API
+    Uint8List imageData = await ApiClient().removeBgApi(imagePath);
+
+    // 2. Save to a new file
+    final directory = await getApplicationDocumentsDirectory();
+    final newImagePath = '${directory.path}/${DateTime.now().millisecond}.png'; // Adjust the name
+    final newImageFile = File(newImagePath).writeAsBytesSync(imageData);
+    count--;
+
+
+
+    // 3. Return the new path
+    if (count == 1) {
+      state = AppState.done;
+      notifyListeners();
+      return newImagePath;
+    }
+    state = AppState.free;
+    notifyListeners();
+    return newImagePath;
+  }
+
+  isStateFree() {
+    return state == AppState.free;
+  }
+
+  isStatePicked() {
+    return state == AppState.picked;
+  }
+
+  isStateProcessing() {
+    return state == AppState.processing;
+  }
+
+  isStateDone() {
+    return state == AppState.done;
   }
 }
 

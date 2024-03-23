@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../../Business_Logic/remove_background.dart';
+// import '../../../Business_Logic/remove_background.dart';
 import '../../../Data/providers/clothes.dart';
 
 class PickImageScreen extends StatefulWidget {
@@ -51,21 +51,22 @@ class _PickImageScreenState extends State<PickImageScreen> {
     cameras = await availableCameras();
     if (cameras.length > 2) {
       _cameraController = CameraController(
-              const CameraDescription(
-                name: '2',
-                lensDirection:
-                CameraLensDirection.back,
-                sensorOrientation: 90,
-              ),
-              ResolutionPreset.max,
-            );
+        const CameraDescription(
+          name: '2',
+          lensDirection: CameraLensDirection.back,
+          sensorOrientation: 90,
+        ),
+        ResolutionPreset.max,
+      );
     }
     _cameraController.setFlashMode(FlashMode.off);
+    _cameraController.setFocusMode(FocusMode.auto);
     await _cameraController.initialize();
     // await _cameraController.setZoomLevel(1);
     // print available cameras
     if (kDebugMode) {
-      print('cameras: ---------------------------------\n\n\n\n$cameras\n\n\n\n---------------------------------');
+      print(
+          'cameras: ---------------------------------\n\n\n\n$cameras\n\n\n\n---------------------------------');
     }
     // open the flash
     setState(() {});
@@ -132,7 +133,6 @@ class _PickImageScreenState extends State<PickImageScreen> {
                         ? Row(
                             children: [
                               buildTakePictureButton(),
-
                             ],
                           )
                         : buildDoneButton(clothes.setImages),
@@ -141,6 +141,11 @@ class _PickImageScreenState extends State<PickImageScreen> {
                   Positioned(
                     bottom: 16,
                     child: buildButtons(),
+                  ),
+                if (clothes.state == AppState.processing)
+                  const Positioned(
+                    bottom: 16,
+                    child: Text('removing the background...')
                   ),
               ],
             ),
@@ -182,7 +187,7 @@ class _PickImageScreenState extends State<PickImageScreen> {
     final clothes = Provider.of<Clothes>(context);
     Widget cameraPreview = AspectRatio(
       aspectRatio: _cameraController.value.aspectRatio,
-      child: clothes.state == AppState.processing
+      child: clothes.isStateProcessing()
           ? const Center(child: CircularProgressIndicator())
           : null,
     );
@@ -193,7 +198,7 @@ class _PickImageScreenState extends State<PickImageScreen> {
       );
     }
     if (clothes.state == AppState.free &&
-        (imagePaths.length < outlines.length)) {
+        (imagePaths.length < outlines.length) && !clothes.isStateProcessing()) {
       cameraPreview = CameraPreview(
         _cameraController,
         child: Opacity(
@@ -206,12 +211,9 @@ class _PickImageScreenState extends State<PickImageScreen> {
           ),
         ),
       );
-      if (clothes.state == AppState.processing) {
-        cameraPreview = CameraPreview(
-          _cameraController,
-          child: const Center(child: CircularProgressIndicator()),
-        );
-      }
+    }
+    if (clothes.state == AppState.processing) {
+      cameraPreview = const Center(child: CircularProgressIndicator());
     }
 
     return cameraPreview;
@@ -221,8 +223,8 @@ class _PickImageScreenState extends State<PickImageScreen> {
     return Row(
       children: [
         CupertinoButton.filled(
-          onPressed: () {
-            addImagePathToList(_imageFile!, 3);
+          onPressed: () async {
+            await addImagePathToList(_imageFile!, 3);
             _clearImage();
           },
           child: const Text('save'),
@@ -266,10 +268,10 @@ class _PickImageScreenState extends State<PickImageScreen> {
           '${appDirectory.path}/${DateTime.now().millisecond}.jpg';
       await image.saveTo(newImagePath);
 
-      setState(() {
+      // setState(() {
         _imageFile = newImagePath;
         clothes.statePicked();
-      });
+      // });
 
       // _saveImagePathToHive(newImagePath, widget.pieceId!);
     } catch (e) {
@@ -279,7 +281,7 @@ class _PickImageScreenState extends State<PickImageScreen> {
     }
   }
 
-  void addImagePathToList(String path, outlinesLength) async {
+  Future<void> addImagePathToList(String path, outlinesLength) async {
     final clothes = Provider.of<Clothes>(context, listen: false);
     // remove the background with the api
     // final Future<Uint8List> rbgImage = ApiClient().removeBgApi(path);
@@ -287,75 +289,27 @@ class _PickImageScreenState extends State<PickImageScreen> {
     // String newImagePath = path;
     // imageinProcess = true;
     // setState(() {
-    clothes.stateProcessing();
+    // clothes.stateProcessing();
     // });
 
-    final String newImagePath = await ImageProcessor()
-        .saveNewImage(path, widget.pieceId!, imagePaths.length.toString());
+    final String newImagePath =
+        await clothes.saveNewImage(path, widget.pieceId!, imagePaths.length);
     imagePaths.add(newImagePath);
-    setState(() {
-      if (imagePaths.length >= outlinesLength) {
-        // state = AppState.done;
-      }
-      clothes.stateFree();
-    });
+    setState(() {});
+    // setState(() {
+    //   if (imagePaths.length >= outlinesLength) {
+    //     // state = AppState.done;
+    //   }
+    //   clothes.stateFree();
+    // });
   }
-
-  // void saveImagePathsToHive() async {
-  //   var box = await Hive.openBox('imageBox');
-  //   box.put('imagePaths${widget.pieceId}', imagePaths);
-  // }
-  // Future<void> _captureAndCropImage() async {
-  //   if (_controller.value.isInitialized) {
-  //     try {
-  //       final XFile image = await _controller.takePicture();
-  //
-  //       // Open the image cropper
-  //       // CroppedFile? croppedFile = await ImageCropper().cropImage(
-  //       //   sourcePath: image.path,
-  //       //   aspectRatioPresets: [
-  //       //     // Optional: Add aspect ratio options
-  //       //     CropAspectRatioPreset.square,
-  //       //     // CropAspectRatioPreset.ratio3x2,
-  //       //     CropAspectRatioPreset.original,
-  //       //     // CropAspectRatioPreset.ratio4x3,
-  //       //     // CropAspectRatioPreset.
-  //       //   ],
-  //       //   uiSettings: [
-  //       //     AndroidUiSettings(
-  //       //       // Optional: Show the toolbar and other UI elements
-  //       //       toolbarTitle: 'Crop image to fit',
-  //       //       toolbarColor: Colors.deepPurple,
-  //       //       toolbarWidgetColor: Colors.white,
-  //       //       initAspectRatio: CropAspectRatioPreset.original,
-  //       //       lockAspectRatio: false,
-  //       //       activeControlsWidgetColor: Colors.deepPurple,
-  //       //     ),
-  //       //   ],
-  //       //   // ... (Other ImageCropper settings if desired)
-  //       // );
-  //
-  //       // if (croppedFile != null) {
-  //       //   setState(() {
-  //       //     _imageFile = croppedFile;
-  //       //     state = AppState.cropped;
-  //       //   });
-  //       // }
-  //     } catch (e) {
-  //       // Handle errors
-  //       if (kDebugMode) {
-  //         print(e);
-  //       }
-  //     }
-  //   }
-  // }
 
   _clearImage() {
     final clothes = Provider.of<Clothes>(context, listen: false);
-    setState(() {
+    // setState(() {
       _imageFile = null;
       clothes.stateFree();
-    });
+    // });
   }
 
   // Future<void> _saveImagePathToHive(String path, String pieceId) async {
