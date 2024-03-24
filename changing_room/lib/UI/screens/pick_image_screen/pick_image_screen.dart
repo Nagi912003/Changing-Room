@@ -43,34 +43,55 @@ class _PickImageScreenState extends State<PickImageScreen> {
   @override
   void initState() {
     super.initState();
+    _initCameras();
     _initCamera();
     // state = AppState.free;
   }
 
-  Future<void> _initCamera() async {
+  Future<void> _initCameras() async {
     cameras = await availableCameras();
-    if (cameras.length > 2) {
-      _cameraController = CameraController(
-        const CameraDescription(
-          name: '2',
-          lensDirection: CameraLensDirection.back,
-          sensorOrientation: 90,
-        ),
-        ResolutionPreset.max,
-      );
-    }
-    _cameraController.setFlashMode(FlashMode.off);
+  }
+
+  Future<void> _initCamera() async {
+    // if (cameras.length > 2) {
+    //   _cameraController = CameraController(
+    //     const CameraDescription(
+    //       name: '2',
+    //       lensDirection: CameraLensDirection.back,
+    //       sensorOrientation: 90,
+    //     ),
+    //     ResolutionPreset.max,
+    //   );
+    // }
     _cameraController.setFocusMode(FocusMode.auto);
     await _cameraController.initialize();
-    // await _cameraController.setZoomLevel(1);
-    // print available cameras
-    if (kDebugMode) {
-      print(
-          'cameras: ---------------------------------\n\n\n\n$cameras\n\n\n\n---------------------------------');
-    }
-    // open the flash
     setState(() {});
   }
+
+  // Future<void> _initCamera() async {
+  //   cameras = await availableCameras();
+  //   if (cameras.length > 2) {
+  //     _cameraController = CameraController(
+  //       const CameraDescription(
+  //         name: '2',
+  //         lensDirection: CameraLensDirection.back,
+  //         sensorOrientation: 90,
+  //       ),
+  //       ResolutionPreset.max,
+  //     );
+  //   }
+  //   _cameraController.setFlashMode(FlashMode.off);
+  //   _cameraController.setFocusMode(FocusMode.auto);
+  //   await _cameraController.initialize();
+  //   // await _cameraController.setZoomLevel(1);
+  //   // print available cameras
+  //   if (kDebugMode) {
+  //     print(
+  //         'cameras: ---------------------------------\n\n\n\n$cameras\n\n\n\n---------------------------------');
+  //   }
+  //   // open the flash
+  //   setState(() {});
+  // }
 
   @override
   void dispose() {
@@ -132,7 +153,49 @@ class _PickImageScreenState extends State<PickImageScreen> {
                     child: imagePaths.length < outlines.length
                         ? Row(
                             children: [
+                              IconButton(
+                                icon: _cameraController.value.flashMode ==
+                                        FlashMode.off
+                                    ? const Icon(Icons.flash_on)
+                                    : const Icon(Icons.flash_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _cameraController.setFlashMode(
+                                      _cameraController.value.flashMode ==
+                                              FlashMode.off
+                                          ? FlashMode.torch
+                                          : FlashMode.off,
+                                    );
+                                  });
+                                },
+                              ),
+                              const SizedBox(
+                                width: 16,
+                              ),
                               buildTakePictureButton(),
+                              const SizedBox(
+                                width: 16,
+                              ),
+                              if (cameras.length > 1)
+                                IconButton(
+                                  icon:
+                                      const Icon(Icons.switch_camera_outlined),
+                                  onPressed: () {
+                                    // Navigate through the list of cameras
+                                    _cameraController = CameraController(
+                                      cameras.firstWhere(
+                                        (element) =>
+                                            element.lensDirection ==
+                                            _cameraController
+                                                .description.lensDirection &&
+                                            element.name != _cameraController
+                                                .description.name,
+                                      ),
+                                      ResolutionPreset.max,
+                                    );
+                                    _initCamera();
+                                  },
+                                ),
                             ],
                           )
                         : buildDoneButton(clothes.setImages),
@@ -144,9 +207,7 @@ class _PickImageScreenState extends State<PickImageScreen> {
                   ),
                 if (clothes.state == AppState.processing)
                   const Positioned(
-                    bottom: 16,
-                    child: Text('removing the background...')
-                  ),
+                      bottom: 16, child: Text('removing the background...')),
               ],
             ),
     );
@@ -198,7 +259,8 @@ class _PickImageScreenState extends State<PickImageScreen> {
       );
     }
     if (clothes.state == AppState.free &&
-        (imagePaths.length < outlines.length) && !clothes.isStateProcessing()) {
+        (imagePaths.length < outlines.length) &&
+        !clothes.isStateProcessing()) {
       cameraPreview = CameraPreview(
         _cameraController,
         child: Opacity(
@@ -269,8 +331,8 @@ class _PickImageScreenState extends State<PickImageScreen> {
       await image.saveTo(newImagePath);
 
       // setState(() {
-        _imageFile = newImagePath;
-        clothes.statePicked();
+      _imageFile = newImagePath;
+      clothes.statePicked();
       // });
 
       // _saveImagePathToHive(newImagePath, widget.pieceId!);
@@ -307,19 +369,19 @@ class _PickImageScreenState extends State<PickImageScreen> {
   _clearImage() {
     final clothes = Provider.of<Clothes>(context, listen: false);
     // setState(() {
-      _imageFile = null;
-      clothes.stateFree();
+    _imageFile = null;
+    clothes.stateFree();
     // });
   }
+}
 
-  // Future<void> _saveImagePathToHive(String path, String pieceId) async {
-  //   var box = await Hive.openBox('imageBox');
-  //   box.put('imagePath${pieceId}', path);
-  // }
+// Future<void> _saveImagePathToHive(String path, String pieceId) async {
+//   var box = await Hive.openBox('imageBox');
+//   box.put('imagePath${pieceId}', path);
+// }
 
 // Helper to get a file path in the app's temporary directory
 //   Future<String> _getFilePath() async {
 //     final directory = await getTemporaryDirectory();
 //     return '${directory.path}/my_image_${DateTime.now()}.jpg';
 //   }
-}

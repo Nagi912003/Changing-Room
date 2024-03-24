@@ -232,16 +232,16 @@ class Clothes with ChangeNotifier {
     notifyListeners();
 
 
-    // await Future.delayed(Duration(seconds: 3));
-    // final newImagePath = imagePath;
-
+    await Future.delayed(const Duration(seconds: 3));
+    final newImagePath = imagePath;
+    //
     // 1. Get the image data from the API
-    Uint8List imageData = await ApiClient().removeBgApi(imagePath);
-
+    // Uint8List imageData = await ApiClient().removeBgApi(imagePath);
+    //
     // 2. Save to a new file
-    final directory = await getApplicationDocumentsDirectory();
-    final newImagePath = '${directory.path}/${DateTime.now().millisecond}.png'; // Adjust the name
-    final newImageFile = File(newImagePath).writeAsBytesSync(imageData);
+    // final directory = await getApplicationDocumentsDirectory();
+    // final newImagePath = '${directory.path}/${DateTime.now().millisecond}.png'; // Adjust the name
+    // final newImageFile = File(newImagePath).writeAsBytesSync(imageData);
     count--;
 
 
